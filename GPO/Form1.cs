@@ -20,6 +20,40 @@ namespace GPO
             dataGridView1.Columns.Add("quantità", "quantità");
             dataGridView1.Columns.Add("ddomanda", "domanda");
             dataGridView1.Columns.Add("offerta", "offerta");
+
+            // INIZIALIZZA IL CHART - AGGIUNGI QUESTO
+            InitializeChart();
+        }
+
+        // METODO PER INIZIALIZZARE IL CHART
+        private void InitializeChart()
+        {
+            // Pulisci le serie esistenti
+            chart1.Series.Clear();
+
+            // Crea e configura la serie Domanda
+            Series seriesDomanda = new Series("Domanda");
+            seriesDomanda.ChartType = SeriesChartType.Line;
+            seriesDomanda.Color = Color.Blue;
+            seriesDomanda.BorderWidth = 2;
+            chart1.Series.Add(seriesDomanda);
+
+            // Crea e configura la serie Offerta
+            Series seriesOfferta = new Series("Offerta");
+            seriesOfferta.ChartType = SeriesChartType.Line;
+            seriesOfferta.Color = Color.Green;
+            seriesOfferta.BorderWidth = 2;
+            chart1.Series.Add(seriesOfferta);
+
+            // Configura gli assi
+            chart1.ChartAreas[0].AxisX.Title = "quantità";
+            chart1.ChartAreas[0].AxisY.Title = "prezzo";
+            chart1.ChartAreas[0].AxisX.LabelStyle.Format = "0";
+            chart1.ChartAreas[0].AxisY.LabelStyle.Format = "0.##";
+
+            // Titolo del grafico
+            chart1.Titles.Clear();
+            chart1.Titles.Add("Analisi di Equilibrio di Mercato");
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -97,6 +131,7 @@ namespace GPO
                 dataGridView1.Rows.Add(q, d, o);
             }
 
+            // PULISCI E AGGIORNA IL CHART
             chart1.Series["Domanda"].Points.Clear();
             chart1.Series["Offerta"].Points.Clear();
 
@@ -110,14 +145,8 @@ namespace GPO
 
                 chart1.Series["Domanda"].Points.AddXY(qVal, dVal);
                 chart1.Series["Offerta"].Points.AddXY(qVal, oVal);
-                chart1.ChartAreas[0].AxisX.LabelStyle.Format = "0";
-                chart1.ChartAreas[0].AxisY.LabelStyle.Format = "0.##";
             }
 
-            chart1.ChartAreas[0].AxisX.Title = "quantità";
-            chart1.ChartAreas[0].AxisY.Title = "prezzo";
-            chart1.Titles.Clear();
-            chart1.Titles.Add("aggiornamento sw");
             chart1.ChartAreas[0].RecalculateAxesScale();
 
             double equilibrioQ = 0;
@@ -145,25 +174,32 @@ namespace GPO
 
             if (trovato)
             {
+                // Rimuovi serie equilibrio precedente se esiste
+                if (chart1.Series.IndexOf("Equilibrio") != -1)
+                {
+                    chart1.Series.Remove(chart1.Series["Equilibrio"]);
+                }
+
                 var serieEquilibrio = chart1.Series.Add("Equilibrio");
                 serieEquilibrio.ChartType = SeriesChartType.Point;
                 serieEquilibrio.MarkerStyle = MarkerStyle.Circle;
-                serieEquilibrio.MarkerSize = 7;
+                serieEquilibrio.MarkerSize = 10;
                 serieEquilibrio.Color = Color.Red;
+                serieEquilibrio.MarkerBorderColor = Color.DarkRed;
+                serieEquilibrio.MarkerBorderWidth = 2;
 
                 serieEquilibrio.Points.AddXY(equilibrioQ, equilibrioD);
 
                 serieEquilibrio.Points[0].Label = $"q={Math.Round(equilibrioQ, 5)}\nd={Math.Round(equilibrioD, 5)}\no={Math.Round(equilibrioO, 5)}";
                 serieEquilibrio.Points[0].LabelForeColor = Color.Black;
+                serieEquilibrio.Points[0].LabelBackColor = Color.White;
+                serieEquilibrio.Points[0].LabelBorderColor = Color.Black;
             }
-
-
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            // Puoi anche inizializzare il chart qui se preferisci
+            // InitializeChart();
         }
     }
-}
