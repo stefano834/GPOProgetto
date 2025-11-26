@@ -15,6 +15,15 @@ namespace GPO
         public Form1()
         {
             InitializeComponent();
+            dataGridView1.Columns.Clear();
+            dataGridView1.Columns.Add("quantità", "quantità");
+            dataGridView1.Columns.Add("ddomanda", "domanda");
+            dataGridView1.Columns.Add("offerta", "offerta");
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
